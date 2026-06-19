@@ -89,7 +89,6 @@ export class FooterComponent implements Component {
 		let totalCacheRead = 0;
 		let totalCacheWrite = 0;
 		let totalCost = 0;
-		let latestCacheHitRate: number | undefined;
 
 		for (const entry of this.session.sessionManager.getEntries()) {
 			if (entry.type === "message" && entry.message.role === "assistant") {
@@ -98,11 +97,6 @@ export class FooterComponent implements Component {
 				totalCacheRead += entry.message.usage.cacheRead;
 				totalCacheWrite += entry.message.usage.cacheWrite;
 				totalCost += entry.message.usage.cost.total;
-
-				const latestPromptTokens =
-					entry.message.usage.input + entry.message.usage.cacheRead + entry.message.usage.cacheWrite;
-				latestCacheHitRate =
-					latestPromptTokens > 0 ? (entry.message.usage.cacheRead / latestPromptTokens) * 100 : undefined;
 			}
 		}
 
@@ -132,10 +126,15 @@ export class FooterComponent implements Component {
 		const statsParts = [];
 		if (totalInput) statsParts.push(`↑${formatTokens(totalInput)}`);
 		if (totalOutput) statsParts.push(`↓${formatTokens(totalOutput)}`);
-		if (totalCacheRead) statsParts.push(`R${formatTokens(totalCacheRead)}`);
-		if (totalCacheWrite) statsParts.push(`W${formatTokens(totalCacheWrite)}`);
-		if ((totalCacheRead > 0 || totalCacheWrite > 0) && latestCacheHitRate !== undefined) {
-			statsParts.push(`CH${latestCacheHitRate.toFixed(1)}%`);
+		if (totalCacheRead || totalCacheWrite) {
+			const totalTokens = totalInput + totalOutput + totalCacheRead + totalCacheWrite;
+			const cumulativeCacheHitRate =
+				totalInput + totalCacheRead + totalCacheWrite > 0
+					? (totalCacheRead / (totalInput + totalCacheRead + totalCacheWrite)) * 100
+					: 0;
+			statsParts.push(
+				`CH${formatTokens(totalCacheRead)}/${formatTokens(totalTokens)} ${cumulativeCacheHitRate.toFixed(1)}%`,
+			);
 		}
 
 		// Show cost with "(sub)" indicator if using OAuth subscription
