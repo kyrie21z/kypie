@@ -2,6 +2,30 @@
 
 ## [Unreleased]
 
+## [0.80.3] - 2026-06-30
+
+### Added
+
+- Added an opt-in Markdown renderer option to preserve source backslash escapes for transcript rendering ([#6105](https://github.com/earendil-works/pi/issues/6105)).
+
+## [0.80.2] - 2026-06-23
+
+## [0.80.1] - 2026-06-23
+
+## [0.80.0] - 2026-06-23
+
+### Changed
+
+- Added `Ctrl+J` as a default newline keybinding alongside `Shift+Enter`.
+
+## [0.79.10] - 2026-06-22
+
+## [0.79.9] - 2026-06-20
+
+### Fixed
+
+- Fixed Markdown streaming code fence rendering so partial closing fences no longer make code blocks shrink or flicker while content streams ([#5846](https://github.com/earendil-works/pi/pull/5846) by [@xl0](https://github.com/xl0)).
+
 ## [0.79.8] - 2026-06-19
 
 ## [0.79.7] - 2026-06-18
